@@ -12,6 +12,42 @@
 // @grant        none
 // ==/UserScript==
 
+function beadspriteExport() {
+    var includeAllFrames = $('#beadspriteExportIncludeAllFrames').is(":checked");
+    var includeColorCount = $('#beadspriteExportIncludeColorCount').is(":checked");
+    var flipMirror = $('#beadspriteExportFlipMirror').is(":checked");
+}
+
+function beadspriteSetupUI() {
+    var panel = $('div.export-panel-misc');
+    var section = `
+<div class="export-panel-section" style="padding-bottom: 5px">
+    <span class="highlight">Export as beadsprite PDF: </span>
+
+    <div class="checkbox-container" style="margin: 5px 0;">
+        <input id="beadspriteExportIncludeAllFrames" class="zip-split-layers-checkbox checkbox-fix" type="checkbox">
+        <label for="beadspriteExportIncludeAllFrames">Export all frames</label>
+    </div>
+
+    <div class="checkbox-container" style="margin: 5px 0;">
+        <input id="beadspriteExportIncludeColorCount" class="zip-split-layers-checkbox checkbox-fix" type="checkbox">
+        <label for="beadspriteExportIncludeColorCount">Include color count</label>
+    </div>
+
+    <div class="checkbox-container" style="margin: 5px 0;">
+        <input id="beadspriteExportFlipMirror" class="zip-split-layers-checkbox checkbox-fix" type="checkbox">
+        <label for="beadspriteExportFlipMirror">Mirror/flip</label>
+    </div>
+
+    <button type="button" class="button button-primary selected-frame-download-button" id="beadspritePDFExport">Download</button>
+</div>`;
+
+    panel.append($.parseHTML(section));
+
+    $('#beadspritePDFExport').on("click", beadspriteExport);
+}
+
+
 var beadspriteSetupInterval = setInterval(beadspriteSetup, 200);
 
 function beadspriteSetup() {
@@ -29,5 +65,7 @@ function beadspriteSetup() {
             bkpInit.apply(this, arguments);
             $.publish("MISC-PANEL-INITIALIZED");
         };
+
+		$.subscribe("MISC-PANEL-INITIALIZED", beadspriteSetupUI);
     }
 }
