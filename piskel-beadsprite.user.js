@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Piskel Beadsprite Export
 // @namespace    https://github.com/sopelt
-// @version      1.0.1
+// @version      1.0.2
 // @description  Add an export option for beadsprite use-cases.
 // @author       Simon Opelt
 // @license      MIT
@@ -16,6 +16,65 @@ function beadspriteExport() {
     var includeAllFrames = $('#beadspriteExportIncludeAllFrames').is(":checked");
     var includeColorCount = $('#beadspriteExportIncludeColorCount').is(":checked");
     var flipMirror = $('#beadspriteExportFlipMirror').is(":checked");
+
+    var frameIndex = pskl.app.piskelController.getCurrentFrameIndex();
+
+    var mergedImage = pskl.app.piskelController.renderFrameAt(frameIndex, true);
+    var mergedFrame = pskl.utils.FrameUtils.createFromImage(mergedImage);
+
+    if (flipMirror) {
+        pskl.tools.transform.TransformUtils.flip(mergedFrame, pskl.tools.transform.TransformUtils.VERTICAL);
+    }
+
+    var doc = new jsPDF();
+
+    var d = 5;
+    var offsetX = 25;
+    var offsetY = 25;
+    var pegR = 0.5;
+    var pearlR = 1.5;
+
+    doc.setDrawColor(220);
+    doc.setFillColor(220);
+
+    var margin = 10;
+    var borderWidth = (mergedFrame.width - 1) * d + 2 * margin;
+    var borderHeight = (mergedFrame.height - 1) * d + 2 * margin;
+
+    doc.lines([[borderWidth, 0], [0, borderHeight], [-borderWidth, 0], [0, -borderHeight]], offsetX - margin, offsetY - margin);
+
+    for (var i = 0; i < mergedFrame.width; i++)
+    for (var j = 0; j < mergedFrame.height; j++)
+    {
+        doc.circle(offsetX + i * d, offsetY + j * d, pegR, 'F');
+    }
+
+    for (var k = 0; k < mergedFrame.width; k++)
+    for (var l = 0; l < mergedFrame.height; l++)
+    {
+        var pixel = mergedFrame.getPixel(k, l);
+        if (pixel) {
+            doc.setLineWidth(0.8);
+            var r = pixel & 0xff;
+            var g = pixel >> 8 & 0xff;
+            var b = pixel >> 16 & 0xff;
+            doc.setDrawColor(r, g, b);
+            doc.circle(offsetX + k * d, offsetY + l * d, pearlR, 'S');
+
+            doc.setDrawColor(230);
+            doc.setLineWidth(0.1);
+            doc.circle(offsetX + k * d, offsetY + l * d, pearlR + 0.35, 'S');
+
+            doc.circle(offsetX + k * d, offsetY + l * d, pearlR - 0.35, 'S');
+        }
+    }
+
+    doc.addPage();
+
+    doc.text('Hello world!', 10, 10);
+
+    var fileName = `${pskl.appEnginePiskelData_.descriptor.name}.pdf`;
+    doc.save(fileName);
 }
 
 function beadspriteSetupUI() {
