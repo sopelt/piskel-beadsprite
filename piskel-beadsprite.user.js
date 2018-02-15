@@ -13,11 +13,16 @@
 // ==/UserScript==
 
 function beadspriteExport() {
-    var includeAllFrames = $('#beadspriteExportIncludeAllFrames').is(":checked");
+    // var includeAllFrames = $('#beadspriteExportIncludeAllFrames').is(":checked");
     var includeColorCount = $('#beadspriteExportIncludeColorCount').is(":checked");
     var flipMirror = $('#beadspriteExportFlipMirror').is(":checked");
 
     var frameIndex = pskl.app.piskelController.getCurrentFrameIndex();
+    var frameCount = pskl.app.piskelController.getFrameCount();
+    var fileName = `${pskl.appEnginePiskelData_.descriptor.name}.pdf`;
+    if (frameCount > 1) {
+        fileName = `${pskl.appEnginePiskelData_.descriptor.name}.${frameIndex}.pdf`;
+    }
 
     var mergedImage = pskl.app.piskelController.renderFrameAt(frameIndex, true);
     var mergedFrame = pskl.utils.FrameUtils.createFromImage(mergedImage);
@@ -28,9 +33,15 @@ function beadspriteExport() {
 
     var doc = new jsPDF();
 
+    if (frameCount > 1) {
+        doc.text(`${pskl.appEnginePiskelData_.descriptor.name} ${frameIndex}`, 15, 15);
+    } else {
+        doc.text(pskl.appEnginePiskelData_.descriptor.name, 15, 15);
+    }
+
     var d = 5;
     var offsetX = 25;
-    var offsetY = 25;
+    var offsetY = 35;
     var pegR = 0.5;
     var pearlR = 1.5;
 
@@ -69,11 +80,6 @@ function beadspriteExport() {
         }
     }
 
-    doc.addPage();
-
-    doc.text('Hello world!', 10, 10);
-
-    var fileName = `${pskl.appEnginePiskelData_.descriptor.name}.pdf`;
     doc.save(fileName);
 }
 
@@ -83,10 +89,10 @@ function beadspriteSetupUI() {
 <div class="export-panel-section" style="padding-bottom: 5px">
     <span class="highlight">Export as beadsprite PDF: </span>
 
-    <div class="checkbox-container" style="margin: 5px 0;">
+    <!--<div class="checkbox-container" style="margin: 5px 0;">
         <input id="beadspriteExportIncludeAllFrames" class="zip-split-layers-checkbox checkbox-fix" type="checkbox">
         <label for="beadspriteExportIncludeAllFrames">Export all frames</label>
-    </div>
+    </div>-->
 
     <div class="checkbox-container" style="margin: 5px 0;">
         <input id="beadspriteExportIncludeColorCount" class="zip-split-layers-checkbox checkbox-fix" type="checkbox">
