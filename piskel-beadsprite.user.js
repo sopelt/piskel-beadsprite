@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Piskel Beadsprite Export
 // @namespace    https://github.com/sopelt
-// @version      1.0.5
+// @version      1.0.6
 // @description  Add an export option for beadsprite use-cases.
 // @author       Simon Opelt
 // @license      MIT
@@ -19,7 +19,7 @@ function beadspriteExport() {
 
     var frameIndex = pskl.app.piskelController.getCurrentFrameIndex();
     var frameCount = pskl.app.piskelController.getFrameCount();
-    var name = $('span.piskel-name')[0].textContent;
+    var name = pskl.app.piskelController.getPiskel().getDescriptor().name;
     var fileName = `${name}.pdf`;
     if (frameCount > 1) {
         fileName = `${name}.${frameIndex}.pdf`;
