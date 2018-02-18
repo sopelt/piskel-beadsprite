@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Piskel Beadsprite Export
 // @namespace    https://github.com/sopelt
-// @version      1.0.6
+// @version      1.1.0
 // @description  Add an export option for beadsprite use-cases.
 // @author       Simon Opelt
 // @license      MIT
@@ -21,6 +21,7 @@ function beadspriteExport() {
     var frameCount = pskl.app.piskelController.getFrameCount();
     var name = pskl.app.piskelController.getPiskel().getDescriptor().name;
     var fileName = `${name}.pdf`;
+
     if (frameCount > 1) {
         fileName = `${name}.${frameIndex}.pdf`;
     }
@@ -99,13 +100,22 @@ function beadspriteExport() {
 
         var currentColors = window.pskl.app.currentColorsService.getCurrentColors();
         for (var c in count) {
-            count[window.pskl.utils.intToHex(c)] = count[c];
+            count[window.pskl.utils.intToHex(c)] = { count: count[c], pixel: c };
         }
 
         doc.setFontSize(11);
         var n = 0;
         for (var c in currentColors) {
-            doc.text(`${currentColors[c]}: ${count[currentColors[c]]}`, 15, offset + 15 + 10 * n);
+            var pixel = count[currentColors[c]].pixel;
+            var r = pixel & 0xff;
+            var g = pixel >> 8 & 0xff;
+            var b = pixel >> 16 & 0xff;
+            doc.setFillColor(r, g, b);
+            doc.setDrawColor(230);
+            doc.setLineWidth(0.1);
+            doc.rect(15, offset + 12 + 10 * n, 3.5, 3.5, 'FD');
+            doc.text(currentColors[c].toUpperCase(), 25, offset + 15 + 10 * n);
+            doc.text(`${count[currentColors[c]].count}`, 45, offset + 15 + 10 * n);
             n++;
         }
     }
