@@ -2,6 +2,8 @@
 
 This [userscript](https://en.wikipedia.org/wiki/Userscript) adds export options for beadsprite use-cases to [piskel (sprite editor)](https://github.com/piskelapp/piskel).
 
+Installable via [OpenUserJS](https://openuserjs.org/scripts/sopelt/Piskel_Beadsprite_Export).
+
 ## Goals
 
  * simple workflow for printing pixel sprites for bead setting
@@ -11,7 +13,7 @@ This [userscript](https://en.wikipedia.org/wiki/Userscript) adds export options 
 
 ## Features
 
- * export to PDF
+ * export to PDF (via [jsPDF](https://github.com/MrRio/jsPDF))
  * flip/mirror
  * color/bead count
 
