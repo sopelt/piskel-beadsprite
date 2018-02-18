@@ -23,6 +23,12 @@ Installable via [OpenUserJS](https://openuserjs.org/scripts/sopelt/Piskel_Beadsp
 
 ## Screenshots
 
+![Basic Options](doc/screenshots/dialog.png)
+
+![Result Image](doc/screenshots/result0.png)
+
+![Result Color Count](doc/screenshots/result1.png)
+
 ## Feedback
 
 Feedback is very welcome. Just open an issue.
