@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Piskel Beadsprite Export
 // @namespace    https://github.com/sopelt
-// @version      1.0.4
+// @version      1.1.1
 // @description  Add an export option for beadsprite use-cases.
 // @author       Simon Opelt
 // @license      MIT
@@ -13,17 +13,22 @@
 // ==/UserScript==
 
 function beadspriteExport() {
-    // var includeAllFrames = $('#beadspriteExportIncludeAllFrames').is(":checked");
+    var includeAllFrames = $('#beadspriteExportIncludeAllFrames').is(":checked");
     var includeColorCount = $('#beadspriteExportIncludeColorCount').is(":checked");
     var flipMirror = $('#beadspriteExportFlipMirror').is(":checked");
+    var splitBoards = $('#beadspriteExportSplitBoards').is(":checked");
 
     var frameIndex = pskl.app.piskelController.getCurrentFrameIndex();
     var frameCount = pskl.app.piskelController.getFrameCount();
-    var fileName = `${pskl.appEnginePiskelData_.descriptor.name}.pdf`;
+    var name = pskl.app.piskelController.getPiskel().getDescriptor().name;
+    var fileName = `${name}.pdf`;
+
     if (frameCount > 1) {
-        fileName = `${pskl.appEnginePiskelData_.descriptor.name}.${frameIndex}.pdf`;
+        fileName = `${name}.${frameIndex}.pdf`;
     }
 
+    var pageWidth = doc.internal.pageSize.width;
+    var pageHeight = doc.internal.pageSize.height;
     var mergedImage = pskl.app.piskelController.renderFrameAt(frameIndex, true);
     var mergedFrame = pskl.utils.FrameUtils.createFromImage(mergedImage);
 
@@ -34,9 +39,9 @@ function beadspriteExport() {
     var doc = new jsPDF();
 
     if (frameCount > 1) {
-        doc.text(`${pskl.appEnginePiskelData_.descriptor.name} ${frameIndex}`, 15, 15);
+        doc.text(`${name} ${frameIndex}`, 15, 15);
     } else {
-        doc.text(pskl.appEnginePiskelData_.descriptor.name, 15, 15);
+        doc.text(name, 15, 15);
     }
 
     var d = 5;
@@ -98,13 +103,22 @@ function beadspriteExport() {
 
         var currentColors = window.pskl.app.currentColorsService.getCurrentColors();
         for (var c in count) {
-            count[window.pskl.utils.intToHex(c)] = count[c];
+            count[window.pskl.utils.intToHex(c)] = { count: count[c], pixel: c };
         }
 
         doc.setFontSize(11);
         var n = 0;
         for (var c in currentColors) {
-            doc.text(`${currentColors[c]}: ${count[currentColors[c]]}`, 15, offset + 15 + 10 * n);
+            var pixel = count[currentColors[c]].pixel;
+            var r = pixel & 0xff;
+            var g = pixel >> 8 & 0xff;
+            var b = pixel >> 16 & 0xff;
+            doc.setFillColor(r, g, b);
+            doc.setDrawColor(230);
+            doc.setLineWidth(0.1);
+            doc.rect(15, offset + 12 + 10 * n, 3.5, 3.5, 'FD');
+            doc.text(currentColors[c].toUpperCase(), 25, offset + 15 + 10 * n);
+            doc.text(`${count[currentColors[c]].count}`, 45, offset + 15 + 10 * n);
             n++;
         }
     }
@@ -118,11 +132,6 @@ function beadspriteSetupUI() {
 <div class="export-panel-section" style="padding-bottom: 5px">
     <span class="highlight">Export as beadsprite PDF: </span>
 
-    <!--<div class="checkbox-container" style="margin: 5px 0;">
-        <input id="beadspriteExportIncludeAllFrames" class="zip-split-layers-checkbox checkbox-fix" type="checkbox">
-        <label for="beadspriteExportIncludeAllFrames">Export all frames</label>
-    </div>-->
-
     <div class="checkbox-container" style="margin: 5px 0;">
         <input id="beadspriteExportIncludeColorCount" class="zip-split-layers-checkbox checkbox-fix" type="checkbox">
         <label for="beadspriteExportIncludeColorCount">Include color count</label>
@@ -131,6 +140,16 @@ function beadspriteSetupUI() {
     <div class="checkbox-container" style="margin: 5px 0;">
         <input id="beadspriteExportFlipMirror" class="zip-split-layers-checkbox checkbox-fix" type="checkbox">
         <label for="beadspriteExportFlipMirror">Mirror/flip</label>
+    </div>
+
+    <div class="checkbox-container" style="margin: 5px 0;">
+        <input id="beadspriteExportIncludeAllFrames" class="zip-split-layers-checkbox checkbox-fix" type="checkbox">
+        <label for="beadspriteExportIncludeAllFrames">Export all frames</label>
+    </div>
+
+    <div class="checkbox-container" style="margin: 5px 0;">
+        <input id="beadspriteExportSplitBoards" class="zip-split-layers-checkbox checkbox-fix" type="checkbox">
+        <label for="beadspriteExportSplitBoards">Split to 29x29 pegboards</label>
     </div>
 
     <button type="button" class="button button-primary selected-frame-download-button" id="beadspritePDFExport">Download</button>
