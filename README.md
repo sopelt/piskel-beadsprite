@@ -1,6 +1,6 @@
 # piskel-beadsprite
 
-This [userscript](https://en.wikipedia.org/wiki/Userscript) adds export options for beadsprite use-cases to [piskel (sprite editor)](https://github.com/piskelapp/piskel).
+This [userscript](https://en.wikipedia.org/wiki/Userscript) adds export options for [beadsprite](https://www.reddit.com/r/beadsprites/comments/fatft/faq_beadsprites_101/) use-cases to [piskel (sprite editor)](https://github.com/piskelapp/piskel).
 
 Installable via [OpenUserJS](https://openuserjs.org/scripts/sopelt/Piskel_Beadsprite_Export), applies directly to [hosted piskel](https://www.piskelapp.com).
 
