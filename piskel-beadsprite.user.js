@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Piskel Beadsprite Export
 // @namespace    https://github.com/sopelt
-// @version      1.1.0
+// @version      1.1.1
 // @description  Add an export option for beadsprite use-cases.
 // @author       Simon Opelt
 // @license      MIT
@@ -23,7 +23,7 @@ function beadspriteExport() {
     var fileName = `${name}.pdf`;
 
     if (frameCount > 1) {
-        fileName = `${name}.${frameIndex}.pdf`;
+        fileName = `${name}.${frameIndex + 1}.pdf`;
     }
 
     var mergedImage = pskl.app.piskelController.renderFrameAt(frameIndex, true);
@@ -36,7 +36,7 @@ function beadspriteExport() {
     var doc = new jsPDF();
 
     if (frameCount > 1) {
-        doc.text(`${name} ${frameIndex}`, 15, 15);
+        doc.text(`${name} ${frameIndex + 1}`, 15, 15);
     } else {
         doc.text(name, 15, 15);
     }
