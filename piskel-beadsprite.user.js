@@ -24,11 +24,11 @@ function beadspriteExport() {
     var fileName = `${name}.pdf`;
 
     if (frameCount > 1) {
-        fileName = `${name}.${frameIndex}.pdf`;
+        fileName = `${name}.${frameIndex + 1}.pdf`;
     }
 
-    var pageWidth = doc.internal.pageSize.width;
-    var pageHeight = doc.internal.pageSize.height;
+    var pageWidth = 29; // TODO FIXME doc.internal.pageSize.width;
+    var pageHeight = 29; // TODO FIXME doc.internal.pageSize.height;
     var mergedImage = pskl.app.piskelController.renderFrameAt(frameIndex, true);
     var mergedFrame = pskl.utils.FrameUtils.createFromImage(mergedImage);
 
@@ -39,7 +39,7 @@ function beadspriteExport() {
     var doc = new jsPDF();
 
     if (frameCount > 1) {
-        doc.text(`${name} ${frameIndex}`, 15, 15);
+        doc.text(`${name} ${frameIndex + 1}`, 15, 15);
     } else {
         doc.text(name, 15, 15);
     }
